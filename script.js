@@ -224,18 +224,41 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 // Função para revelar elementos quando estiverem visíveis na viewport
+let lastScrollPosition = window.pageYOffset;
+
 function reveal() {
     const reveals = document.querySelectorAll('.reveal');
+    const currentScrollPosition = window.pageYOffset;
+    const scrollingUp = currentScrollPosition < lastScrollPosition;
     
     reveals.forEach(element => {
         const windowHeight = window.innerHeight;
         const elementTop = element.getBoundingClientRect().top;
+        const elementBottom = element.getBoundingClientRect().bottom;
         const elementVisible = 150; // Distância em pixels antes do elemento aparecer
         
+        // Elemento está entrando na viewport pela parte inferior
         if (elementTop < windowHeight - elementVisible) {
             element.classList.add('active');
         }
+        
+        // Se estiver rolando para cima e o elemento estiver saindo da viewport pela parte superior
+        if (scrollingUp && elementBottom < elementVisible) {
+            element.classList.remove('active');
+        }
+        
+        // Se o elemento estiver completamente fora da viewport pela parte superior
+        if (elementBottom < 0) {
+            element.classList.remove('active');
+        }
+        
+        // Se o elemento estiver completamente fora da viewport pela parte inferior
+        if (elementTop > windowHeight) {
+            element.classList.remove('active');
+        }
     });
+    
+    lastScrollPosition = currentScrollPosition;
 }
 
 // Adiciona o evento de scroll para chamar a função reveal
