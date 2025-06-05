@@ -102,7 +102,7 @@ VanillaTilt.init(document.querySelectorAll(".skill-card"), {
     scale: 1.1
 });
 
-// Formulário de contato com efeito de highlight
+// Formulário de contato com envio de email
 const contactForm = document.getElementById('contact-form');
 const formInputs = document.querySelectorAll('input, textarea');
 
@@ -120,23 +120,42 @@ if (contactForm) {
     contactForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
-        const formData = new FormData(contactForm);
-        const data = {
-            name: formData.get('name'),
-            email: formData.get('email'),
-            message: formData.get('message')
+        // Mostrar loading no botão
+        const submitBtn = contactForm.querySelector('.submit-btn');
+        const btnText = submitBtn.querySelector('.btn-text');
+        const originalText = btnText.textContent;
+        btnText.textContent = 'Enviando...';
+        submitBtn.disabled = true;
+
+        // Preparar os parâmetros do email
+        const templateParams = {
+            from_name: contactForm.querySelector('#name').value,
+            from_email: contactForm.querySelector('#email').value,
+            subject: contactForm.querySelector('#subject').value,
+            message: contactForm.querySelector('#message').value,
+            to_email: 'Carlosh0711@gmail.com'
         };
 
-        // Aqui você pode adicionar a lógica para enviar o formulário
-        console.log('Dados do formulário:', data);
-        
-        // Animação de sucesso
-        contactForm.classList.add('success');
-        setTimeout(() => {
-            alert('Mensagem enviada com sucesso!');
-            contactForm.reset();
-            contactForm.classList.remove('success');
-        }, 1000);
+        // Enviar o email usando EmailJS
+        emailjs.send('service_qqxvxwp', 'template_qqxvxwp', templateParams)
+            .then(() => {
+                // Sucesso
+                btnText.textContent = 'Mensagem Enviada!';
+                contactForm.reset();
+                setTimeout(() => {
+                    btnText.textContent = originalText;
+                    submitBtn.disabled = false;
+                }, 3000);
+            })
+            .catch((error) => {
+                // Erro
+                console.error('Erro ao enviar mensagem:', error);
+                btnText.textContent = 'Erro ao enviar';
+                setTimeout(() => {
+                    btnText.textContent = originalText;
+                    submitBtn.disabled = false;
+                }, 3000);
+            });
     });
 }
 
@@ -184,7 +203,7 @@ window.addEventListener('scroll', () => {
 const typedTextSpan = document.querySelector(".typed-text");
 const cursorSpan = document.querySelector(".cursor");
 
-const textArray = ["Segurança da Informação", "Desenvolvimento Web", "Gestão de TI", "Inovação"];
+const textArray = ["Desenvolvimento Web","Inovação","Segurança da Informação","Gestão de TI",];
 const typingDelay = 100;
 const erasingDelay = 50;
 const newTextDelay = 2000;
@@ -268,4 +287,34 @@ window.addEventListener('scroll', reveal);
 window.addEventListener('DOMContentLoaded', reveal);
 
 // Chama a função reveal quando todas as imagens e recursos estiverem carregados
-window.addEventListener('load', reveal); 
+window.addEventListener('load', reveal);
+
+// Menu Mobile Toggle
+const menuToggle = document.querySelector('.menu-toggle');
+const mobileNavLinks = document.querySelector('.nav-links');
+
+if (menuToggle) {
+    menuToggle.addEventListener('click', () => {
+        mobileNavLinks.classList.toggle('active');
+        menuToggle.querySelector('i').classList.toggle('fa-bars');
+        menuToggle.querySelector('i').classList.toggle('fa-times');
+    });
+
+    // Fechar menu ao clicar em um link
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileNavLinks.classList.remove('active');
+            menuToggle.querySelector('i').classList.add('fa-bars');
+            menuToggle.querySelector('i').classList.remove('fa-times');
+        });
+    });
+
+    // Fechar menu ao rolar a página
+    window.addEventListener('scroll', () => {
+        if (mobileNavLinks.classList.contains('active')) {
+            mobileNavLinks.classList.remove('active');
+            menuToggle.querySelector('i').classList.add('fa-bars');
+            menuToggle.querySelector('i').classList.remove('fa-times');
+        }
+    });
+} 
