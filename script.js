@@ -157,11 +157,12 @@ if (contactForm) {
 
             console.log('Enviando e-mail com os parâmetros:', templateParams);
 
-            // Enviar e-mail usando EmailJS
-            const response = await emailjs.send(
+            // Enviar e-mail usando EmailJS - método atualizado
+            const response = await emailjs.sendForm(
                 'service_ok62jwo',
                 'template_g3jv9q9',
-                templateParams
+                contactForm,
+                'P4stAQFRqC-heHPS'
             );
 
             console.log('Resposta do EmailJS:', response);

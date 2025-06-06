@@ -339,8 +339,10 @@
     <script>
         (function() {
             // Inicializa o EmailJS com sua chave pública
-            emailjs.init("P4stAQFRqC-heHPS", {
-                publicKey: "P4stAQFRqC-heHPS"
+            emailjs.init({
+                publicKey: "P4stAQFRqC-heHPS",
+                blockHeadless: false, // Permite testes em ambientes sem navegador
+                limitRate: true // Ativa limite de taxa para evitar spam
             });
         })();
     </script>
