@@ -340,7 +340,10 @@
     <script type="text/javascript">
         (function() {
             // Inicializa o EmailJS com a Public Key
-            emailjs.init('P4stAQFRqC-heHPS');
+            emailjs.init({
+                publicKey: "P4stAQFRqC-heHPS"
+            });
+            console.log('EmailJS inicializado com sucesso');
         })();
     </script>
     <script src="script.js"></script>

@@ -135,7 +135,6 @@ if (contactForm) {
         const submitBtn = contactForm.querySelector('.submit-btn');
         const originalBtnText = submitBtn.innerHTML;
         
-        // Altera o texto do botão para indicar o envio
         submitBtn.innerHTML = `
             <span class="btn-text">Enviando...</span>
             <i class="fas fa-spinner fa-spin"></i>
@@ -145,33 +144,42 @@ if (contactForm) {
         try {
             console.log('Iniciando envio do e-mail...');
             
+            // Cria o objeto de parâmetros
+            const templateParams = {
+                to_name: 'Carlos Henrique Souza Rezende Lisboa',
+                from_name: document.getElementById('name').value,
+                from_email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value
+            };
+
+            // Log dos parâmetros para debug
+            console.log('Service ID:', 'service_ok62jwo');
+            console.log('Template ID:', 'template_g3jv9q9');
+            console.log('Template Params:', templateParams);
+            console.log('Public Key:', 'P4stAQFRqC-heHPS');
+
             // Enviar e-mail usando EmailJS
             const response = await emailjs.send(
-                'service_ok62jwo',    // Service ID
-                'template_g3jv9q9',   // Template ID
-                {
-                    to_name: 'Carlos Henrique Souza Rezende Lisboa',
-                    from_name: document.getElementById('name').value,
-                    from_email: document.getElementById('email').value,
-                    subject: document.getElementById('subject').value,
-                    message: document.getElementById('message').value
-                },
-                'P4stAQFRqC-heHPS'  // Public Key
+                'service_ok62jwo',
+                'template_g3jv9q9',
+                templateParams,
+                'P4stAQFRqC-heHPS'
             );
 
             console.log('Resposta do EmailJS:', response);
 
             if (response.status === 200) {
-                // Animação de sucesso
                 contactForm.classList.add('success');
                 alert('Mensagem enviada com sucesso!');
                 contactForm.reset();
             }
         } catch (error) {
             console.error('Erro detalhado:', error);
+            console.error('Status:', error.status);
+            console.error('Text:', error.text);
             alert('Erro ao enviar mensagem. Por favor, tente novamente.');
         } finally {
-            // Restaura o botão ao estado original
             submitBtn.innerHTML = originalBtnText;
             submitBtn.disabled = false;
             contactForm.classList.remove('success');
