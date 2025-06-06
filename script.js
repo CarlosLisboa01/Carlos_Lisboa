@@ -142,27 +142,21 @@ if (contactForm) {
         `;
         submitBtn.disabled = true;
 
-        // Adiciona classe de loading no formulário
-        contactForm.classList.add('loading');
-
         try {
-            const formData = new FormData(contactForm);
-            const templateParams = {
-                to_name: "Carlos Lisboa",
-                from_name: formData.get('name'),
-                from_email: formData.get('email'),
-                subject: formData.get('subject'),
-                message: formData.get('message')
-            };
-
-            console.log('Enviando e-mail com os parâmetros:', templateParams);
-
-            // Enviar e-mail usando EmailJS - método atualizado
-            const response = await emailjs.sendForm(
-                'service_ok62jwo',
-                'template_g3jv9q9',
-                contactForm,
-                'P4stAQFRqC-heHPS'
+            console.log('Iniciando envio do e-mail...');
+            
+            // Enviar e-mail usando EmailJS
+            const response = await emailjs.send(
+                'service_ok62jwo',    // Service ID
+                'template_g3jv9q9',   // Template ID
+                {
+                    to_name: 'Carlos Henrique Souza Rezende Lisboa',
+                    from_name: document.getElementById('name').value,
+                    from_email: document.getElementById('email').value,
+                    subject: document.getElementById('subject').value,
+                    message: document.getElementById('message').value
+                },
+                'P4stAQFRqC-heHPS'  // Public Key
             );
 
             console.log('Resposta do EmailJS:', response);
@@ -170,56 +164,16 @@ if (contactForm) {
             if (response.status === 200) {
                 // Animação de sucesso
                 contactForm.classList.add('success');
-                
-                // Cria elemento de feedback
-                const feedback = document.createElement('div');
-                feedback.className = 'form-feedback success';
-                feedback.innerHTML = `
-                    <i class="fas fa-check-circle"></i>
-                    <p>Mensagem enviada com sucesso!</p>
-                    <p class="feedback-detail">Responderei o mais breve possível.</p>
-                `;
-                
-                // Adiciona o feedback após o formulário
-                contactForm.parentNode.insertBefore(feedback, contactForm.nextSibling);
-                
-                // Remove o feedback após 5 segundos
-                setTimeout(() => {
-                    feedback.remove();
-                }, 5000);
-                
-                // Limpa o formulário
+                alert('Mensagem enviada com sucesso!');
                 contactForm.reset();
-                
-                // Remove classe active dos inputs
-                inputs.forEach(input => input.classList.remove('active'));
             }
         } catch (error) {
-            console.error('Erro ao enviar mensagem:', error);
-            
-            // Cria elemento de feedback de erro
-            const feedback = document.createElement('div');
-            feedback.className = 'form-feedback error';
-            feedback.innerHTML = `
-                <i class="fas fa-exclamation-circle"></i>
-                <p>Erro ao enviar mensagem</p>
-                <p class="feedback-detail">Por favor, tente novamente mais tarde.</p>
-            `;
-            
-            // Adiciona o feedback após o formulário
-            contactForm.parentNode.insertBefore(feedback, contactForm.nextSibling);
-            
-            // Remove o feedback após 5 segundos
-            setTimeout(() => {
-                feedback.remove();
-            }, 5000);
+            console.error('Erro detalhado:', error);
+            alert('Erro ao enviar mensagem. Por favor, tente novamente.');
         } finally {
             // Restaura o botão ao estado original
             submitBtn.innerHTML = originalBtnText;
             submitBtn.disabled = false;
-            
-            // Remove classes de estado
-            contactForm.classList.remove('loading');
             contactForm.classList.remove('success');
         }
     });

@@ -335,15 +335,12 @@
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script>
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
         (function() {
-            // Inicializa o EmailJS com sua chave pública
-            emailjs.init({
-                publicKey: "P4stAQFRqC-heHPS",
-                blockHeadless: false, // Permite testes em ambientes sem navegador
-                limitRate: true // Ativa limite de taxa para evitar spam
-            });
+            // Inicializa o EmailJS com a Public Key
+            emailjs.init('P4stAQFRqC-heHPS');
         })();
     </script>
     <script src="script.js"></script>
