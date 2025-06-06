@@ -102,7 +102,7 @@ VanillaTilt.init(document.querySelectorAll(".skill-card"), {
     scale: 1.1
 });
 
-// Formulário de contato com envio de email
+// Formulário de contato com efeito de highlight
 const contactForm = document.getElementById('contact-form');
 const formInputs = document.querySelectorAll('input, textarea');
 
@@ -117,45 +117,110 @@ formInputs.forEach(input => {
 });
 
 if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
+    // Adiciona classe 'active' nos inputs quando preenchidos
+    const inputs = contactForm.querySelectorAll('input, textarea, select');
+    inputs.forEach(input => {
+        input.addEventListener('input', () => {
+            if (input.value.trim() !== '') {
+                input.classList.add('active');
+            } else {
+                input.classList.remove('active');
+            }
+        });
+    });
+
+    contactForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // Mostrar loading no botão
         const submitBtn = contactForm.querySelector('.submit-btn');
-        const btnText = submitBtn.querySelector('.btn-text');
-        const originalText = btnText.textContent;
-        btnText.textContent = 'Enviando...';
+        const originalBtnText = submitBtn.innerHTML;
+        
+        // Altera o texto do botão para indicar o envio
+        submitBtn.innerHTML = `
+            <span class="btn-text">Enviando...</span>
+            <i class="fas fa-spinner fa-spin"></i>
+        `;
         submitBtn.disabled = true;
 
-        // Preparar os parâmetros do email
-        const templateParams = {
-            from_name: contactForm.querySelector('#name').value,
-            from_email: contactForm.querySelector('#email').value,
-            subject: contactForm.querySelector('#subject').value,
-            message: contactForm.querySelector('#message').value,
-            to_email: 'Carlosh0711@gmail.com'
-        };
+        // Adiciona classe de loading no formulário
+        contactForm.classList.add('loading');
 
-        // Enviar o email usando EmailJS
-        emailjs.send('service_qqxvxwp', 'template_qqxvxwp', templateParams)
-            .then(() => {
-                // Sucesso
-                btnText.textContent = 'Mensagem Enviada!';
+        try {
+            const formData = new FormData(contactForm);
+            const templateParams = {
+                to_name: "Carlos Lisboa",
+                from_name: formData.get('name'),
+                from_email: formData.get('email'),
+                subject: formData.get('subject'),
+                message: formData.get('message')
+            };
+
+            console.log('Enviando e-mail com os parâmetros:', templateParams);
+
+            // Enviar e-mail usando EmailJS
+            const response = await emailjs.send(
+                'service_ok62jwo',
+                'template_g3jv9q9',
+                templateParams
+            );
+
+            console.log('Resposta do EmailJS:', response);
+
+            if (response.status === 200) {
+                // Animação de sucesso
+                contactForm.classList.add('success');
+                
+                // Cria elemento de feedback
+                const feedback = document.createElement('div');
+                feedback.className = 'form-feedback success';
+                feedback.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <p>Mensagem enviada com sucesso!</p>
+                    <p class="feedback-detail">Responderei o mais breve possível.</p>
+                `;
+                
+                // Adiciona o feedback após o formulário
+                contactForm.parentNode.insertBefore(feedback, contactForm.nextSibling);
+                
+                // Remove o feedback após 5 segundos
+                setTimeout(() => {
+                    feedback.remove();
+                }, 5000);
+                
+                // Limpa o formulário
                 contactForm.reset();
-                setTimeout(() => {
-                    btnText.textContent = originalText;
-                    submitBtn.disabled = false;
-                }, 3000);
-            })
-            .catch((error) => {
-                // Erro
-                console.error('Erro ao enviar mensagem:', error);
-                btnText.textContent = 'Erro ao enviar';
-                setTimeout(() => {
-                    btnText.textContent = originalText;
-                    submitBtn.disabled = false;
-                }, 3000);
-            });
+                
+                // Remove classe active dos inputs
+                inputs.forEach(input => input.classList.remove('active'));
+            }
+        } catch (error) {
+            console.error('Erro ao enviar mensagem:', error);
+            
+            // Cria elemento de feedback de erro
+            const feedback = document.createElement('div');
+            feedback.className = 'form-feedback error';
+            feedback.innerHTML = `
+                <i class="fas fa-exclamation-circle"></i>
+                <p>Erro ao enviar mensagem</p>
+                <p class="feedback-detail">Por favor, tente novamente mais tarde.</p>
+            `;
+            
+            // Adiciona o feedback após o formulário
+            contactForm.parentNode.insertBefore(feedback, contactForm.nextSibling);
+            
+            // Remove o feedback após 5 segundos
+            setTimeout(() => {
+                feedback.remove();
+            }, 5000);
+        } finally {
+            // Restaura o botão ao estado original
+            submitBtn.innerHTML = originalBtnText;
+            submitBtn.disabled = false;
+            
+            // Remove classes de estado
+            contactForm.classList.remove('loading');
+            contactForm.classList.remove('success');
+        }
     });
 }
 
@@ -203,7 +268,7 @@ window.addEventListener('scroll', () => {
 const typedTextSpan = document.querySelector(".typed-text");
 const cursorSpan = document.querySelector(".cursor");
 
-const textArray = ["Desenvolvimento Web","Inovação","Segurança da Informação","Gestão de TI",];
+const textArray = ["Segurança da Informação", "Desenvolvimento Web", "Gestão de TI", "Inovação"];
 const typingDelay = 100;
 const erasingDelay = 50;
 const newTextDelay = 2000;
@@ -243,41 +308,18 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 // Função para revelar elementos quando estiverem visíveis na viewport
-let lastScrollPosition = window.pageYOffset;
-
 function reveal() {
     const reveals = document.querySelectorAll('.reveal');
-    const currentScrollPosition = window.pageYOffset;
-    const scrollingUp = currentScrollPosition < lastScrollPosition;
     
     reveals.forEach(element => {
         const windowHeight = window.innerHeight;
         const elementTop = element.getBoundingClientRect().top;
-        const elementBottom = element.getBoundingClientRect().bottom;
         const elementVisible = 150; // Distância em pixels antes do elemento aparecer
         
-        // Elemento está entrando na viewport pela parte inferior
         if (elementTop < windowHeight - elementVisible) {
             element.classList.add('active');
         }
-        
-        // Se estiver rolando para cima e o elemento estiver saindo da viewport pela parte superior
-        if (scrollingUp && elementBottom < elementVisible) {
-            element.classList.remove('active');
-        }
-        
-        // Se o elemento estiver completamente fora da viewport pela parte superior
-        if (elementBottom < 0) {
-            element.classList.remove('active');
-        }
-        
-        // Se o elemento estiver completamente fora da viewport pela parte inferior
-        if (elementTop > windowHeight) {
-            element.classList.remove('active');
-        }
     });
-    
-    lastScrollPosition = currentScrollPosition;
 }
 
 // Adiciona o evento de scroll para chamar a função reveal
@@ -287,34 +329,4 @@ window.addEventListener('scroll', reveal);
 window.addEventListener('DOMContentLoaded', reveal);
 
 // Chama a função reveal quando todas as imagens e recursos estiverem carregados
-window.addEventListener('load', reveal);
-
-// Menu Mobile Toggle
-const menuToggle = document.querySelector('.menu-toggle');
-const mobileNavLinks = document.querySelector('.nav-links');
-
-if (menuToggle) {
-    menuToggle.addEventListener('click', () => {
-        mobileNavLinks.classList.toggle('active');
-        menuToggle.querySelector('i').classList.toggle('fa-bars');
-        menuToggle.querySelector('i').classList.toggle('fa-times');
-    });
-
-    // Fechar menu ao clicar em um link
-    document.querySelectorAll('.nav-links a').forEach(link => {
-        link.addEventListener('click', () => {
-            mobileNavLinks.classList.remove('active');
-            menuToggle.querySelector('i').classList.add('fa-bars');
-            menuToggle.querySelector('i').classList.remove('fa-times');
-        });
-    });
-
-    // Fechar menu ao rolar a página
-    window.addEventListener('scroll', () => {
-        if (mobileNavLinks.classList.contains('active')) {
-            mobileNavLinks.classList.remove('active');
-            menuToggle.querySelector('i').classList.add('fa-bars');
-            menuToggle.querySelector('i').classList.remove('fa-times');
-        }
-    });
-} 
+window.addEventListener('load', reveal); 
