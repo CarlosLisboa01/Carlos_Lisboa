@@ -164,7 +164,7 @@ if (contactForm) {
                 'service_ok62jwo',
                 'template_g3jv9q9',
                 templateParams,
-                'P4stAQFRqC-heHPS'
+                'P4stAQFRqC--heHPS'
             );
 
             console.log('Resposta do EmailJS:', response);
@@ -292,4 +292,23 @@ window.addEventListener('scroll', reveal);
 window.addEventListener('DOMContentLoaded', reveal);
 
 // Chama a função reveal quando todas as imagens e recursos estiverem carregados
-window.addEventListener('load', reveal); 
+window.addEventListener('load', reveal);
+
+// Configuração do EmailJS
+emailjs.init('P4stAQFRqC--heHPS');
+
+const serviceID = 'service_ok62jwo';
+const templateID = 'template_g3jv9q9';
+
+// Função de envio de email (exemplo)
+function sendEmail(formData) {
+  return emailjs.sendForm(serviceID, templateID, formData)
+    .then(response => {
+      console.log('E-mail enviado com sucesso!', response.status, response.text);
+      return true;
+    })
+    .catch(error => {
+      console.error('Falha ao enviar e-mail:', error);
+      return false;
+    });
+} 
