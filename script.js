@@ -157,7 +157,7 @@ if (contactForm) {
             console.log('Service ID:', 'service_ok62jwo');
             console.log('Template ID:', 'template_g3jv9q9');
             console.log('Template Params:', templateParams);
-            console.log('Public Key:', 'P4stAQFRqC-heHPS');
+            console.log('Public Key:', 'P4stAQFRqC--heHPS');
 
             // Enviar e-mail usando EmailJS
             const response = await emailjs.send(
