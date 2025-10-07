@@ -18,6 +18,8 @@
 
 html {
     scroll-behavior: smooth;
+    /* Compensa o cabeçalho fixo nas âncoras em telas maiores */
+    scroll-padding-top: 90px;
 }
 
 body {
@@ -45,7 +47,7 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
 }
 
@@ -913,6 +915,18 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* Ajustes responsivos */
 @media (max-width: 768px) {
+    /* Deixa o header ocupar espaço do fluxo no mobile, evitando sobreposição */
+    .header {
+        position: sticky;
+        top: 0;
+        padding: 1rem;
+    }
+
+    /* Compensa o cabeçalho mais alto ao navegar por âncoras */
+    html {
+        scroll-padding-top: 150px;
+    }
+
     .contact-form {
         padding: 1.5rem;
     }
