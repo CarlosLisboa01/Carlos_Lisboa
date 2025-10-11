@@ -980,7 +980,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 /* Skills */
 .skills-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(5, 1fr);
     gap: 2rem;
     padding: 2rem 0;
 }
@@ -1042,9 +1042,16 @@ textarea::-webkit-scrollbar-thumb:hover {
 .skill-card i.fa-git-alt { color: #f05032; }
 
 /* Responsividade para skills */
+@media (max-width: 1024px) {
+    .skills-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+    }
+}
+
 @media (max-width: 768px) {
     .skills-grid {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
     }
 
